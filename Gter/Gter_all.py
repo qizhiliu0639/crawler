@@ -162,7 +162,7 @@ def get_apply_data(post_url):
                     offer_line[index] = td
             apply_info.append(offer_line)
         #print(apply_info)
-        personal_table = soup.find('table', class_='cgtl mbm',summary='个人情况')
+        personal_table = soup.find('table', class_='cgtl mbm')
         personal_table = personal_table.find('tbody')
         #print(personal_table)
         personal_table = personal_table.find_all('tr')
@@ -196,6 +196,7 @@ def get_apply_data(post_url):
                 td = td.replace('\n', '').replace('\r', '').replace(' ','')
                 personal_line[index] = td
         #print(personal_line)
+        print(apply_info)
 
         return apply_info,personal_line
 
@@ -225,14 +226,15 @@ def write_xls_append(filename, new_line):
 
 def main():
     create_xls(filename)
-    for i in range(4145,0,-1):
+    for i in range(4145,4100,-1):
         url = 'http://www.gter.net/offer/index/show.html?id='+str(i)
         print(url)
+        #apply_info,personal_info = get_apply_data(url)
         try:
             apply_info,personal_info = get_apply_data(url)
             for text in apply_info:
                 ans = text+personal_info
-                #print(ans)
+                print(ans)
                 write_xls_append(filename,ans)
             print('*********'+str(i)+'已爬完'+'******************')
         except :
