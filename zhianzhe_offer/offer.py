@@ -31,7 +31,7 @@ def getofferurl(url):
         for i in range(times + 1):
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(5)
-    execute_times(100)
+    execute_times(200)
 
     soup = bs(driver.page_source, features="lxml")
     class_link = r"trtd all(.*?) target"
@@ -54,7 +54,7 @@ def getinfo(url):
     soup = bs(html, features="lxml")
     name = soup.find("div", {"class": 'su-title'})
     name = name.get_text().split()
-    print(name)
+    #print(name)
     contain = soup.find_all("div", {"class": 'spant'})
     contain_1 = soup.find_all("div", {"class": 'spani'})
     title = []
@@ -69,9 +69,26 @@ def getinfo(url):
     #print(title)
     #print(subinfo)
     d = dict(zip(title,subinfo))
-    res = [name[0]]
+    res = [name[0],name[1]]
     ind = 0
-    new_line = ['学生姓名','本科学校','本科专业','录取学校','录取专业','背景资料','主要经历']
+    new_line = ['学生姓名','本科学校','本科专业','录取学校','录取专业','背景资料','主要经历','绩点','语言','GRE or GMAT']
+    temp = d['背景资料'].split('，')
+   #print(temp)
+    for element in temp:
+        #print(element)
+        if r'GPA' in element:
+            d['绩点'] = element
+        elif r'托福' in element:
+            #print(element)
+            d['语言'] = element
+        elif r'雅思'  in element:
+            #print(element)
+            d['语言'] = element
+        elif r'GRE' in element:
+            d['GRE or GMAT'] = element
+        elif r'GMAT' in element:
+            d['GRE or GMAT'] = element
+    #print(d)
     for i in new_line:
         if i in d:
             res.append(d[i])
@@ -81,7 +98,7 @@ def getinfo(url):
     return res
 
 def create_xls(filename):
-    new_line = ['Title','学生姓名','本科学校','本科专业','录取学校','录取专业','背景资料','主要经历']
+    new_line = ['Title','录取时间','学生姓名','本科学校','本科专业','录取学校','录取专业','背景资料','主要经历','绩点','语言','GRE/GMAT']
     wb = xlwt.Workbook()
     sheet1 = wb.add_sheet('Sheet 1')
     for i in range(len(new_line)):
@@ -106,7 +123,7 @@ def main():
     filename = 'offer.xls'
     create_xls(filename)
     #region_url = ['https://www.compassedu.hk/offer_12','https://www.compassedu.hk/offer_11','https://www.compassedu.hk/offer_7','https://www.compassedu.hk/offer_10','https://www.compassedu.hk/offer_9']
-    url = 'https://www.compassedu.hk/offer_9'
+    url = 'https://www.compassedu.hk/offer_10'
     offer_url = getofferurl(url)
     for i in offer_url:
         info_list = getinfo(i)
