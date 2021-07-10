@@ -16,11 +16,11 @@ import time
 import random
 
 
-user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36 Edg/87.0.664.66'
+user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'
 base_url = 'http://www.gter.net/offer/'
-filename = 'Gter_all_4.xls'
+filename = 'Gter_all_new.xls'
 sleep = True
-test_url = 'http://www.gter.net/offer/index/show.html?id=41691'
+test_url = 'https://offer.gter.net/details/yKQ9mk4wXhmhs9q8MQPSBW1J4xItTgNqibBtb6ICueJ6iC72JYSnZqjftfTpvvaL9JXf2QzEHjHrBBdaaBMBI7yCDgFcQITPNWPDmjE3Njc~'
 
 # login with cookies
 def login(url):
@@ -104,7 +104,7 @@ def get_index(apply_info, th):
     return apply_info.index(th)
 
 def get_offer_info(apply_table):
-    offer_info = ['申请学校:','学位:','专业:','申请结果:','入学年份:','入学学期:','通知时间:','使用哪种语言成绩:']
+    offer_info = ['申请学校:','学位:','专业:','项目:','申请结果:','入学年份:','入学学期:','通知时间:','使用哪种语言成绩:']
     
 
 def get_apply_data(post_url):
@@ -113,9 +113,9 @@ def get_apply_data(post_url):
     if isinstance(raw_html_info, str):
         soup = bs(raw_html_info, 'html.parser')
         #offer_summary = re.match(r'offer (.*?)')
-        apply_table = soup.find_all('table', class_='cgtl mbm',summary=re.compile("offer"))
-        #print(apply_table)
-        offer_info = ['申请学校:','学位:','专业:','申请结果:','入学年份:','入学学期:','通知时间:','使用哪种语言成绩:']
+        apply_table = soup.find_all('table', class_='cgtl mbm')
+        print(apply_table)
+        offer_info = ['申请学校:','学位:','专业:','项目:','申请结果:','入学年份:','入学学期:','通知时间:','使用哪种语言成绩:']
         personal_info = ['IELTS:','LSAT:','TOEFL:','GRE:','PTE A:','GMAT:','sub:','本科学校档次:','本科专业:','本科成绩和算法、排名:','研究生专业:','研究生成绩和算法、排名:','研究生学校档次:','其他说明:','备注:']
         #print(len(apply_table))
         for i in range(len(apply_table)):
@@ -135,10 +135,14 @@ def get_apply_data(post_url):
             for tr in offer_table:
                 th = tr.find('th')
                 th = "".join(th.contents)
-                #print(th)
+                print(th)
                 index = get_index(offer_info, th)
 
                 td = tr.find('td')
+                print(td)
+                sl = td.find_all('span')
+                result = [span.get_text() for span in sl]
+                print(result)
                 if td.find('a', href=True):
                     td = td.find('a', href=True)
                     #print(td)
@@ -152,7 +156,7 @@ def get_apply_data(post_url):
 # =============================================================================
                     offer_line[index] = td
                 else:
-                    td = "".join(td.contents)
+                    td = "".join(td.get_text())
                     td = td.replace('\n', '').replace('\r', '').replace('  ', '')
 # =============================================================================
 #                     print('td')
@@ -226,7 +230,7 @@ def write_xls_append(filename, new_line):
 
 def main():
     create_xls(filename)
-    for i in range(4145,4100,-1):
+    for i in range(43803,41650,-1):
         url = 'http://www.gter.net/offer/index/show.html?id='+str(i)
         print(url)
         #apply_info,personal_info = get_apply_data(url)
@@ -242,5 +246,6 @@ def main():
 
 
 if __name__ == '__main__':
-    #print(get_apply_data(test_url))
-    main()
+    print(get_apply_data(test_url))
+    #main()
+    

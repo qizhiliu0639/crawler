@@ -123,7 +123,7 @@ def main():
     filename = 'offer.xls'
     create_xls(filename)
     #region_url = ['https://www.compassedu.hk/offer_12','https://www.compassedu.hk/offer_11','https://www.compassedu.hk/offer_7','https://www.compassedu.hk/offer_10','https://www.compassedu.hk/offer_9']
-    url = 'https://www.compassedu.hk/offer_10'
+    url = 'https://www.compassedu.hk/offer_11'
     offer_url = getofferurl(url)
     for i in offer_url:
         info_list = getinfo(i)
